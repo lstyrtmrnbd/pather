@@ -77,7 +77,8 @@ namespace pather {
   using grid_t = std::vector<std::vector<int>>;
   using map_t = std::map<std::pair<int, int>, std::pair<int, int>>;
   using path_t = std::vector<std::pair<int, int>>;
-  
+
+  std::unique_ptr<path_t> findPath(map_t& map); 
   std::unique_ptr<map_t> breadthFirst(grid_t& grid);
 }
 

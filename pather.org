@@ -1,0 +1,113 @@
+* Pather
+
+Pather is a library for pathfinding on a 2D grid.
+
+** Pathfinding info
+Pathfinding is a graph search problem. The graph in this case is a grid.
+
+Pathfinding algorithms:
+
+  + Breadth First Search
+    - explores equally in all directions
+  + Djikstra's Algorithm (Uniform Cost Search)
+    - favors lower cost paths
+  + A*
+    - optimization of Djikstra's for single target
+
+** Architecture:
+
+*** Examples:
+  pather::Graph* graph = pather::buildGraph(simple_2D_input_structure)
+  
+  std::vector<std::pair<int, int>>* path =  pather::find(graph, begin_indices, end_indices)
+
+*** Questions and Answers:
+  
+  + OOP Graph of Nodes approach or just typedefs and free functions?
+    - typedefs and free funcs for now, wrap later if necessary
+  
+*** Statements:
+
+  + returned pointers to pather::Graph objects should declare ownership
+  + i.e. it's the caller's responsibility to store & manage it
+
+** Data choices:
+
+*** Broad
++ where is x,y info encoded?
+  - in Node itself
+  - in Grid's container of Nodes
+  - currently: the grid_t indices
+
+*** Node
+    + the structures that fill a grid, contain a difficulty value at least
+    + is it even necessary if it's just an int wrapper?
+      - figure out what other values it might hold otherwise nix it early
+
+*** Grid
+    + 2D grid of nodes
+    + what structure is it constructed from?
+      - if it just takes in and stores a vector<vector<int>> then why bother?
+
+*** Path
+    std::vector<std::pair<int, int>>
+    + list of indices that compose the found path
+
+*** Map
+    std::map? std::unordered_map? // BENCHMARK FOR DECISION says the MJCPL's only book on cpp
+    + some sort of associative mapping of nodes to their predecessor
+    + if "Node" isn't actually a structure then maybe just a mapping of std::pair<int, int> to std::pair<int, int>?
+      - this is nicely general
+      - BUT the actual pairs need to compare equal for testing the keys
+      - i.e. provide the std::map specialization with an appropriate comparison predicate
+    + these maps can be memo'd to save later calculation
+      - i.e. std::vector<Map> is a list of all mappings for all points, a path can very easily be grabbed out of it
+      - BUT if the difficulty of any node in the grid changes, whole list of Maps needs to be recalc'd
+
+** The header:
+#+name: header
+#+begin_src cpp :tangle pather.hpp
+#ifndef PATHER_INCLUDE
+#define PATHER_INCLUDE
+#include <memory>
+#include <vector>
+
+namespace pather {
+
+  using grid_t = std::vector<std::vector<int>>;
+  using map_t = std::map<std::pair<int, int>, std::pair<int, int>>;
+  using path_t = std::vector<std::pair<int, int>>;
+  
+  std::unique_ptr<map_t> breadthFirst(grid_t& grid);
+}
+
+#endif // PATHER_INCLUDE
+#+end_src
+
+*** header thoughts:      
+
+** The implementation:
+#+name: implementation
+#+begin_src cpp :tangle pather.cpp
+#include "pather.hpp"
+
+#+end_src
+
+*** implementation thoughts:
+
+** org-babel tests:
+
+*** basic cout
+#+BEGIN_SRC cpp
+#include <iostream>
+
+int main(int argc, char** argv) {
+
+  std::cout << "Org-babel cpp check!!" << std::endl;
+  return 0;
+}
+#+END_SRC
+
+#+RESULTS:
+: Org-babel cpp check!!
+

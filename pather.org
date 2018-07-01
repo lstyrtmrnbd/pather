@@ -9,10 +9,10 @@ Pathfinding algorithms:
 
   + Breadth First Search
     - explores equally in all directions
-  + Djikstra's Algorithm (Uniform Cost Search)
+  + Dijkstra's Algorithm (Uniform Cost Search)
     - favors lower cost paths
   + A*
-    - optimization of Djikstra's for single target
+    - optimization of Dijkstra's for single target
 
 ** Architecture:
 
@@ -75,6 +75,7 @@ Pathfinding algorithms:
 #+BEGIN_SRC cpp
 #ifndef PATHER_INCLUDE
 #define PATHER_INCLUDE
+#include <map>
 #include <vector>
 
 namespace pather {
@@ -85,6 +86,7 @@ namespace pather {
 
   path_t* findPath(const map_t& map); 
   map_t* breadthFirst(const grid_t& grid);
+  map_t* dijkstras(const grid_t& grid);
 }
 
 #endif // PATHER_INCLUDE
@@ -102,19 +104,22 @@ namespace pather {
 
 *** implementation thoughts:
 
-** org-babel tests:
+** Tests:
 
-*** basic cout
-#+BEGIN_SRC cpp :tangle no
+#+NAME: tests
+#+HEADER: :tangle tests.cpp 
+#+HEADER: :flags '("-std=c++14" "-I/home/userprime/src/pather/")
+#+BEGIN_SRC cpp
 #include <iostream>
+#include "pather.hpp"
 
 int main(int argc, char** argv) {
 
-  std::cout << "Org-babel cpp check!!" << std::endl;
+  std::cout << "Test output\n";
   return 0;
 }
 #+END_SRC
 
-#+RESULTS:
-: Org-babel cpp check!!
+#+RESULTS: tests
+: Test output
 

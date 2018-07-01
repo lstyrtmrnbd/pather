@@ -65,8 +65,9 @@ Pathfinding algorithms:
       - BUT if the difficulty of any node in the grid changes, whole list of Maps needs to be recalc'd
 
 ** The header:
-#+name: header
-#+begin_src cpp :tangle pather.hpp
+#+NAME: header
+#+HEADER: :tangle pather.hpp :main no
+#+BEGIN_SRC cpp
 #ifndef PATHER_INCLUDE
 #define PATHER_INCLUDE
 #include <memory>
@@ -83,23 +84,24 @@ namespace pather {
 }
 
 #endif // PATHER_INCLUDE
-#+end_src
+#+END_SRC
 
 *** header thoughts:      
 
 ** The implementation:
-#+name: implementation
-#+begin_src cpp :tangle pather.cpp
+#+NAME: implementation
+#+HEADER: :tangle pather.cpp :main no
+#+BEGIN_SRC cpp
 #include "pather.hpp"
 
-#+end_src
+#+END_SRC
 
 *** implementation thoughts:
 
 ** org-babel tests:
 
 *** basic cout
-#+BEGIN_SRC cpp
+#+BEGIN_SRC cpp :tangle no
 #include <iostream>
 
 int main(int argc, char** argv) {

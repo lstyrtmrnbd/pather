@@ -17,9 +17,15 @@ Pathfinding algorithms:
 ** Architecture:
 
 *** Examples:
-  pather::Graph* graph = pather::buildGraph(simple_2D_input_structure)
+**** OOP:
+     pather::Graph* graph = pather::buildGraph(simple_2D_input_structure)
   
-  std::vector<std::pair<int, int>>* path =  pather::find(graph, begin_indices, end_indices)
+     std::vector<std::pair<int, int>>* path =  pather::find(graph, begin_indices, end_indices)
+
+**** type style:
+     pather::grid_t* grid = pather::buildGrid(input)
+
+     pather::path_t* path = pather::find(graph, begin, end)
 
 *** Questions and Answers:
   
@@ -28,8 +34,7 @@ Pathfinding algorithms:
   
 *** Statements:
 
-  + returned pointers to pather::Graph objects should declare ownership
-  + i.e. it's the caller's responsibility to store & manage it
+  + return raw pointers and let callers traffic in ownership
 
 ** Data choices:
 
@@ -70,7 +75,6 @@ Pathfinding algorithms:
 #+BEGIN_SRC cpp
 #ifndef PATHER_INCLUDE
 #define PATHER_INCLUDE
-#include <memory>
 #include <vector>
 
 namespace pather {
@@ -79,8 +83,8 @@ namespace pather {
   using map_t = std::map<std::pair<int, int>, std::pair<int, int>>;
   using path_t = std::vector<std::pair<int, int>>;
 
-  std::unique_ptr<path_t> findPath(map_t& map); 
-  std::unique_ptr<map_t> breadthFirst(grid_t& grid);
+  path_t* findPath(const map_t& map); 
+  map_t* breadthFirst(const grid_t& grid);
 }
 
 #endif // PATHER_INCLUDE

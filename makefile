@@ -1,6 +1,6 @@
 CC = g++
 
-DEVCFLAGS =  -ggdb -Wall -Wextra -Werror -Wpedantic -std=c++14
+DEVCFLAGS =  -ggdb -Wall -Wextra -Wpedantic -std=c++14
 
 SOURCES = $(wildcard src/*.cpp)
 

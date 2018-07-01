@@ -1,24 +1,23 @@
 #include "pather.hpp"
 
-std::unique_ptr<grid_t> pather::makeGrid(int w, int h, std::function<int(int, int)> setDifficulty) {
+std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty) {
   
   std::unique_ptr<grid_t> ugp(new std::vector<std::vector<int>>(w, std::vector<int>(h)));
 
-  setEachNode(*ugp, setDifficulty);
+  forEachNode(*ugp, setDifficulty);
 
   return ugp;
 }
 
-void pather::setEachNode(grid_t& grid, std::function<int(int, int)> nodeFunc) {
+void pather::forEachNode(grid_t& grid, node_func_t nodeFunc) {
 
-  int x = 0;
-  int y = 0;
+  auto x = 0, y = 0;
 
   for(auto ix = grid.begin(); ix != grid.end(); ++ix) {
 
     for(auto iy = ix->begin(); iy != ix->end(); ++iy) {
 
-      *iy = nodeFunc(x, y);
+      nodeFunc(x, y, *iy);
       y += 1;  
     }
     

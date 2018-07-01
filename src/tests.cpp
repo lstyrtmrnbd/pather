@@ -1,12 +1,12 @@
 #include <iostream>
 #include "pather.hpp"
 
-/* Tangle out changes before executing */
+/* Tangle out changes and 'make pather' before executing */
 
 int testGrid() {
 
-  auto flatDifficulty = [](int, int) {
-    return 1;
+  auto flatDifficulty = [](int x, int y, int& n) {
+    n = 1;
   };
 
   std::unique_ptr<grid_t> ugp = pather::makeGrid(12, 24, flatDifficulty);
@@ -14,7 +14,17 @@ int testGrid() {
   std::cout << "Grid is " << ugp->size() << " elements wide and " <<
                              ugp->at(0).size() << " elements tall.\n";
   
-  return 1;
+  auto total = 0;
+
+  auto totalDifficulty = [&total](int x, int y, int& n) {
+    total += n;
+  };
+
+  pather::forEachNode(*ugp, totalDifficulty);
+
+  std::cout << "Total of all node difficulties is " << total << "\n";
+
+  return 0;
 }
 
 int main(int argc, char** argv) {

@@ -1,6 +1,6 @@
 * Pather
 
-Pather is a library for pathfinding on a 2D grid.
+Pather is a rude library for pathfinding on a 2D grid.
 
 ** Pathfinding info
 Pathfinding is a graph search problem. The graph in this case is a grid.
@@ -66,13 +66,12 @@ Pathfinding algorithms:
     + some sort of associative mapping of nodes to their predecessor
     + if "Node" isn't actually a structure then maybe just a mapping of std::pair<int, int> to std::pair<int, int>?
       - this is nicely general
-      - BUT the actual pairs need to compare equal for testing the keys
-      - i.e. provide the std::map specialization with an appropriate comparison predicate
+      - BUT the actual pairs need to compare equal by value for testing the keys
     + these maps can be memo'd to save later calculation
       - i.e. std::vector<Map> is a list of all mappings for all points, a path can very easily be grabbed out of it
       - BUT if the difficulty of any node in the grid changes, whole list of Maps needs to be recalc'd
 
-** The header:
+** Header:
 #+NAME: header
 #+HEADER: :tangle src/pather.hpp :main no
 #+BEGIN_SRC cpp
@@ -83,14 +82,16 @@ Pathfinding algorithms:
 #include <memory>
 #include <vector>
 
+using index_t = std::pair<int, int>;
 using grid_t = std::vector<std::vector<int>>;
-using map_t = std::map<std::pair<int, int>, std::pair<int, int>>;
-using path_t = std::vector<std::pair<int, int>>;
+using map_t = std::map<index_t, index_t>;
+using path_t = std::vector<index_t>;
+using node_func_t = std::function<void(int, int, int&)>;
 
 namespace pather {
 
-  std::unique_ptr<grid_t> makeGrid(int w, int h, std::function<int(int, int)> setDifficulty);
-  void setEachNode(grid_t& grid, std::function<int(int, int)> nodeFunc);
+  std::unique_ptr<grid_t> makeGrid(int w, int h, node_func_t setDifficulty);
+  void forEachNode(grid_t& grid, node_func_t nodeFunc);
 
   path_t* findPath(const map_t& map); 
   map_t* breadthFirst(const grid_t& grid);
@@ -100,31 +101,30 @@ namespace pather {
 #endif // PATHER_INCLUDE
 #+END_SRC
 
-** The implementation:
+** Implementation:
 #+NAME: implementation
 #+HEADER: :tangle src/pather.cpp :main no
 #+BEGIN_SRC cpp
 #include "pather.hpp"
 
-std::unique_ptr<grid_t> pather::makeGrid(int w, int h, std::function<int(int, int)> setDifficulty) {
+std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty) {
   
   std::unique_ptr<grid_t> ugp(new std::vector<std::vector<int>>(w, std::vector<int>(h)));
 
-  setEachNode(*ugp, setDifficulty);
+  forEachNode(*ugp, setDifficulty);
 
   return ugp;
 }
 
-void pather::setEachNode(grid_t& grid, std::function<int(int, int)> nodeFunc) {
+void pather::forEachNode(grid_t& grid, node_func_t nodeFunc) {
 
-  int x = 0;
-  int y = 0;
+  auto x = 0, y = 0;
 
   for(auto ix = grid.begin(); ix != grid.end(); ++ix) {
 
     for(auto iy = ix->begin(); iy != ix->end(); ++iy) {
 
-      *iy = nodeFunc(x, y);
+      nodeFunc(x, y, *iy);
       y += 1;  
     }
     
@@ -148,12 +148,12 @@ map_t* pather::breadthFirst(const grid_t& grid) {
 #include <iostream>
 #include "pather.hpp"
 
-/* Tangle out changes before executing */
+/* Tangle out changes and 'make pather' before executing */
 
 int testGrid() {
 
-  auto flatDifficulty = [](int, int) {
-    return 1;
+  auto flatDifficulty = [](int x, int y, int& n) {
+    n = 1;
   };
 
   std::unique_ptr<grid_t> ugp = pather::makeGrid(12, 24, flatDifficulty);
@@ -161,7 +161,17 @@ int testGrid() {
   std::cout << "Grid is " << ugp->size() << " elements wide and " <<
                              ugp->at(0).size() << " elements tall.\n";
   
-  return 1;
+  auto total = 0;
+
+  auto totalDifficulty = [&total](int x, int y, int& n) {
+    total += n;
+  };
+
+  pather::forEachNode(*ugp, totalDifficulty);
+
+  std::cout << "Total of all node difficulties is " << total << "\n";
+
+  return 0;
 }
 
 int main(int argc, char** argv) {
@@ -175,6 +185,7 @@ int main(int argc, char** argv) {
 #+END_SRC
 
 #+RESULTS: tests
-| Grid  | is        | 12 | elements | wide | and | 24 | elements | tall. |
-| Tests | finished. |    |          |      |     |    |          |       |
+| Grid  | is        |  12 | elements | wide         | and |  24 | elements | tall. |
+| Total | of        | all | node     | difficulties | is  | 288 |          |       |
+| Tests | finished. |     |          |              |     |     |          |       |
 

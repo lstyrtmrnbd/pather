@@ -13,9 +13,9 @@ void pather::forEachNode(grid_t& grid, node_func_t nodeFunc) {
 
   auto x = 0, y = 0;
 
-  for(auto ix = grid.begin(); ix != grid.end(); ++ix) {
+  for (auto ix = grid.begin(); ix != grid.end(); ++ix) {
 
-    for(auto iy = ix->begin(); iy != ix->end(); ++iy) {
+    for (auto iy = ix->begin(); iy != ix->end(); ++iy) {
 
       nodeFunc(x, y, *iy);
       y += 1;  
@@ -59,10 +59,17 @@ std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
   ump->insert(std::pair<index_t, index_t>(start, start));
 
   while (!frontier.empty()) {
+    
+    index_t current = frontier.front();
+    frontier.pop();
 
-    index_t current = frontier.pop();
-  }
-  
+    for (auto next : *listNeighbors(grid, current)) {
 
+      if (ump->find(next) == ump->end()) {
+	frontier.push(next);
+	ump->insert(std::pair<index_t, index_t>(next, current));
+      }
+    }
+  }  
   return ump;
 }

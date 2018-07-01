@@ -5,11 +5,11 @@
 #include <memory>
 #include <vector>
 
-namespace pather {
+using grid_t = std::vector<std::vector<int>>;
+using map_t = std::map<std::pair<int, int>, std::pair<int, int>>;
+using path_t = std::vector<std::pair<int, int>>;
 
-  using grid_t = std::vector<std::vector<int>>;
-  using map_t = std::map<std::pair<int, int>, std::pair<int, int>>;
-  using path_t = std::vector<std::pair<int, int>>;
+namespace pather {
 
   std::unique_ptr<grid_t> makeGrid(int w, int h, std::function<int(int, int)> setDifficulty);
   void setEachNode(grid_t& grid, std::function<int(int, int)> nodeFunc);

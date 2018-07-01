@@ -83,11 +83,11 @@ Pathfinding algorithms:
 #include <memory>
 #include <vector>
 
-namespace pather {
+using grid_t = std::vector<std::vector<int>>;
+using map_t = std::map<std::pair<int, int>, std::pair<int, int>>;
+using path_t = std::vector<std::pair<int, int>>;
 
-  using grid_t = std::vector<std::vector<int>>;
-  using map_t = std::map<std::pair<int, int>, std::pair<int, int>>;
-  using path_t = std::vector<std::pair<int, int>>;
+namespace pather {
 
   std::unique_ptr<grid_t> makeGrid(int w, int h, std::function<int(int, int)> setDifficulty);
   void setEachNode(grid_t& grid, std::function<int(int, int)> nodeFunc);
@@ -108,7 +108,7 @@ namespace pather {
 
 std::unique_ptr<grid_t> pather::makeGrid(int w, int h, std::function<int(int, int)> setDifficulty) {
   
-  std::unique_ptr<grid_t> ugp(new std::vector<vector<int>>(w, std::vector<int>(h)));
+  std::unique_ptr<grid_t> ugp(new std::vector<std::vector<int>>(w, std::vector<int>(h)));
 
   setEachNode(*ugp, setDifficulty);
 
@@ -117,41 +117,46 @@ std::unique_ptr<grid_t> pather::makeGrid(int w, int h, std::function<int(int, in
 
 void pather::setEachNode(grid_t& grid, std::function<int(int, int)> nodeFunc) {
 
-  for(auto x = grid.begin(); x != grid.end(); ++x) {
+  int x = 0;
+  int y = 0;
 
-    for(auto y = x->begin(); y != x->end(); ++y) {
+  for(auto ix = grid.begin(); ix != grid.end(); ++ix) {
 
-      *y = nodeFunc(x, y);  
+    for(auto iy = ix->begin(); iy != ix->end(); ++iy) {
+
+      *iy = nodeFunc(x, y);
+      y += 1;  
     }
+    
+    x += 1;
   }
 }
-
+/**
 map_t* pather::breadthFirst(const grid_t& grid) {
 
 
 }
-
+*/
 #+END_SRC
 
 ** Tests:
 
 #+NAME: tests
 #+HEADER: :tangle src/tests.cpp 
-#+HEADER: :flags '("-std=c++14" "-I/home/userprime/src/pather/")
+#+HEADER: :flags '("-std=c++14" "-I/home/userprime/src/pather/src/" "/home/userprime/src/pather/src/pather.o")
 #+BEGIN_SRC cpp
 #include <iostream>
 #include "pather.hpp"
 
-using namespace pather;
-
 /* Tangle out changes before executing */
+
 int testGrid() {
 
   auto flatDifficulty = [](int, int) {
     return 1;
   };
 
-  std::unique_ptr<grid_t> ugp = makeGrid(12, 24, flatDifficulty);
+  std::unique_ptr<grid_t> ugp = pather::makeGrid(12, 24, flatDifficulty);
 
   std::cout << "Grid is " << ugp->size() << " elements wide and " <<
                              ugp->at(0).size() << " elements tall.\n";
@@ -170,4 +175,6 @@ int main(int argc, char** argv) {
 #+END_SRC
 
 #+RESULTS: tests
+| Grid  | is        | 12 | elements | wide | and | 24 | elements | tall. |
+| Tests | finished. |    |          |      |     |    |          |       |
 

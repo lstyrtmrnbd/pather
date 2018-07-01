@@ -1,16 +1,15 @@
 #include <iostream>
 #include "pather.hpp"
 
-using namespace pather;
-
 /* Tangle out changes before executing */
+
 int testGrid() {
 
   auto flatDifficulty = [](int, int) {
     return 1;
   };
 
-  std::unique_ptr<grid_t> ugp = makeGrid(12, 24, flatDifficulty);
+  std::unique_ptr<grid_t> ugp = pather::makeGrid(12, 24, flatDifficulty);
 
   std::cout << "Grid is " << ugp->size() << " elements wide and " <<
                              ugp->at(0).size() << " elements tall.\n";

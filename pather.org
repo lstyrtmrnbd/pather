@@ -80,6 +80,7 @@ Pathfinding algorithms:
 #include <functional>
 #include <map>
 #include <memory>
+#include <queue>
 #include <vector>
 
 using index_t = std::pair<int, int>;
@@ -93,9 +94,11 @@ namespace pather {
   std::unique_ptr<grid_t> makeGrid(int w, int h, node_func_t setDifficulty);
   void forEachNode(grid_t& grid, node_func_t nodeFunc);
 
-  path_t* findPath(const map_t& map); 
-  map_t* breadthFirst(const grid_t& grid);
+  map_t* breadthFirst(const grid_t& grid, index_t start);
   map_t* dijkstras(const grid_t& grid);
+
+  path_t* findPath(const map_t& map); 
+
 }
 
 #endif // PATHER_INCLUDE
@@ -127,16 +130,27 @@ void pather::forEachNode(grid_t& grid, node_func_t nodeFunc) {
       nodeFunc(x, y, *iy);
       y += 1;  
     }
-    
     x += 1;
   }
 }
-/**
-map_t* pather::breadthFirst(const grid_t& grid) {
 
+std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
 
+  std::queue<index_t> frontier();
+  frontier.push(start);
+
+  std::unique_ptr<map_t> ump(new map_t());
+  ump->insert(std::pair<index_t, index_t>(start, start));
+
+  while (!frontier.empty()) {
+
+    index_t current = frontier.pop(); 
+  }
+  
+
+  return ump;
 }
-*/
+
 #+END_SRC
 
 ** Tests:

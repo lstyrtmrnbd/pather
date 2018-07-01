@@ -20,13 +20,23 @@ void pather::forEachNode(grid_t& grid, node_func_t nodeFunc) {
       nodeFunc(x, y, *iy);
       y += 1;  
     }
-    
     x += 1;
   }
 }
-/**
-map_t* pather::breadthFirst(const grid_t& grid) {
 
+std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
 
+  std::queue<index_t> frontier();
+  frontier.push(start);
+
+  std::unique_ptr<map_t> ump(new map_t());
+  ump->insert(std::pair<index_t, index_t>(start, start));
+
+  while (!frontier.empty()) {
+
+    index_t current = frontier.pop(); 
+  }
+  
+
+  return ump;
 }
-*/

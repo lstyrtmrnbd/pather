@@ -2,15 +2,17 @@ CC = g++
 
 DEVCFLAGS =  -ggdb -Wall -Wextra -Werror -Wpedantic -std=c++14
 
-TARGET = caster
-
 SOURCES = $(wildcard src/*.cpp)
 
 OBJ = $(SOURCES:.cpp=.o)
 
 tests: $(OBJ)
 
-	$(CC) $(DEVCFLAGS) -o $@.bin $^ $(LDFLAGS)
+	$(CC) $(DEVCFLAGS) -o $@.bin $^
+
+pather: src/pather.cpp
+
+	$(CC) $(DEVCFLAGS) -c -o src/pather.o $^
 
 clean:
 	rm $(OBJ)

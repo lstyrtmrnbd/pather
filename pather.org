@@ -62,8 +62,9 @@ Pathfinding algorithms:
     + list of indices that compose the found path
 
 *** Map
-    std::map? std::unordered_map? // BENCHMARK FOR DECISION says the MJCPL's only book on cpp
+    std::map? std::unordered_map? // benchmark to decide says the MJCPL's only book on cpp
     + some sort of associative mapping of nodes to their predecessor
+    + the start node is mapped to itself so when index == index the start has been reached
     + if "Node" isn't actually a structure then maybe just a mapping of std::pair<int, int> to std::pair<int, int>?
       - this is nicely general
       - BUT the actual pairs need to compare equal by value for testing the keys
@@ -94,11 +95,14 @@ namespace pather {
   std::unique_ptr<grid_t> makeGrid(int w, int h, node_func_t setDifficulty);
   void forEachNode(grid_t& grid, node_func_t nodeFunc);
 
-  map_t* breadthFirst(const grid_t& grid, index_t start);
-  map_t* dijkstras(const grid_t& grid);
+  bool inGridBounds(const grid_t& grid, index_t index);
 
-  path_t* findPath(const map_t& map); 
+  std::unique_ptr<path_t> listNeighbors(const grid_t& grid, index_t index);
 
+  std::unique_ptr<map_t> breadthFirst(const grid_t& grid, index_t start);
+  std::unique_ptr<map_t> dijkstras(const grid_t& grid);
+
+  std::unique_ptr<path_t> findPath(const map_t& map); 
 }
 
 #endif // PATHER_INCLUDE
@@ -134,9 +138,35 @@ void pather::forEachNode(grid_t& grid, node_func_t nodeFunc) {
   }
 }
 
+bool pather::inGridBounds(const grid_t& grid, index_t index) {
+
+  if (index.first > (signed)grid.size() || index.first < 0) return false;
+  
+  if (index.second > (signed)grid[0].size() || index.second < 0) return false;
+
+  return true;
+}
+
+std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index) {
+
+  std::unique_ptr<path_t> neighbors(new path_t());
+  
+  auto N = index_t(index.first, index.second++);
+  auto E = index_t(index.first++, index.second);
+  auto S = index_t(index.first, index.second--);
+  auto W = index_t(index.first--, index.second);
+
+  if (inGridBounds(grid, N)) neighbors->push_back(N);
+  if (inGridBounds(grid, E)) neighbors->push_back(E);
+  if (inGridBounds(grid, S)) neighbors->push_back(S);
+  if (inGridBounds(grid, W)) neighbors->push_back(W);
+
+  return neighbors;
+}
+
 std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
 
-  std::queue<index_t> frontier();
+  std::queue<index_t> frontier = std::queue<index_t>();
   frontier.push(start);
 
   std::unique_ptr<map_t> ump(new map_t());
@@ -144,7 +174,7 @@ std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
 
   while (!frontier.empty()) {
 
-    index_t current = frontier.pop(); 
+    index_t current = frontier.pop();
   }
   
 

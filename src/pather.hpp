@@ -17,11 +17,14 @@ namespace pather {
   std::unique_ptr<grid_t> makeGrid(int w, int h, node_func_t setDifficulty);
   void forEachNode(grid_t& grid, node_func_t nodeFunc);
 
-  map_t* breadthFirst(const grid_t& grid, index_t start);
-  map_t* dijkstras(const grid_t& grid);
+  bool inGridBounds(const grid_t& grid, index_t index);
 
-  path_t* findPath(const map_t& map); 
+  std::unique_ptr<path_t> listNeighbors(const grid_t& grid, index_t index);
 
+  std::unique_ptr<map_t> breadthFirst(const grid_t& grid, index_t start);
+  std::unique_ptr<map_t> dijkstras(const grid_t& grid);
+
+  std::unique_ptr<path_t> findPath(const map_t& map); 
 }
 
 #endif // PATHER_INCLUDE

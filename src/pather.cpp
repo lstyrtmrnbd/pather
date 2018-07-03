@@ -11,12 +11,12 @@ std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty
 
 void pather::forEachNode(grid_t& grid, node_func_t nodeFunc) {
 
-  auto x = 0, y = 0;
-
+  auto x = 0;
   for (auto ix = grid.begin(); ix != grid.end(); ++ix) {
 
+    auto y = 0;
     for (auto iy = ix->begin(); iy != ix->end(); ++iy) {
-
+      
       nodeFunc(x, y, *iy);
       y += 1;  
     }

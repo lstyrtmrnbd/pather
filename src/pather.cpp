@@ -20,6 +20,7 @@ void pather::forEachNode(grid_t& grid, node_func_t nodeFunc) {
       nodeFunc(x, y, *iy);
       y += 1;  
     }
+    
     x += 1;
   }
 }

@@ -7,7 +7,13 @@ void drawGrid(grid_t& grid) {
 
   auto printNodes = [&grid](int x, int y, int& n) {
 
-    std::cout << "(" << x << ", " << y << ")";
+    // std::cout << "(" << x << ", " << y << ")";
+
+    if (y == grid.at(0).size() - 1) {
+      std::cout << n << "\n";
+    } else {
+      std::cout << n;
+    }
   };
 
   pather::forEachNode(grid, printNodes);

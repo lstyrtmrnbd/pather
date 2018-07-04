@@ -37,21 +37,22 @@ std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index)
 
 std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
 
-  std::queue<index_t> frontier = std::queue<index_t>();
-  frontier.push(start);
+  auto frontier = std::make_unique<std::queue<index_t>>();
+  frontier->push(start);
 
   auto ump = std::make_unique<map_t>();
   ump->insert(std::pair<index_t, index_t>(start, start));
 
-  while (!frontier.empty()) {
+  while (!frontier->empty()) {
     
-    index_t current = frontier.front();
-    frontier.pop();
+    index_t current = frontier->front();
+    frontier->pop();
 
-    for (auto next : *listNeighbors(grid, current)) {
+    auto neighbors = listNeighbors(grid, current);
+    for (auto next : *neighbors) {
 
       if (ump->find(next) == ump->end()) {
-	frontier.push(next);
+	frontier->push(next);
 	ump->insert(std::pair<index_t, index_t>(next, current));
       }
     }

@@ -76,6 +76,14 @@ Pathfinding algorithms:
       - i.e. std::vector<Map> is a list of all mappings for all start points, a path can very easily be grabbed out of it
       - BUT if the difficulty of any node in the grid changes, whole list of Maps needs to be recalc'd
 
+** Planning:
+
+*** TODO pluralize testing of grids
+*** TODO finish out grid fill -> map draw in tests
+*** TODO CHECK ALL grid parsing to make sure row is dominate col is subordinate
+*** TODO check grid draw orientation
+*** TODO test breadthfirst
+
 
 
 

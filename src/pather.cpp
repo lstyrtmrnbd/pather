@@ -4,25 +4,9 @@ std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty
   
   auto ugp = std::make_unique<grid_t>(w, std::vector<int>(h));
 
-  forEachNode(*ugp, setDifficulty);
+  forVec2D<int>(*ugp, setDifficulty);
 
   return ugp;
-}
-
-void pather::forEachNode(grid_t& grid, node_func_t nodeFunc) {
-
-  auto x = 0;
-  for (auto ix = grid.begin(); ix != grid.end(); ++ix) {
-
-    auto y = 0;
-    for (auto iy = ix->begin(); iy != ix->end(); ++iy) {
-      
-      nodeFunc(x, y, *iy);
-      y += 1;  
-    }
-    
-    x += 1;
-  }
 }
 
 bool pather::inGridBounds(const grid_t& grid, index_t index) {

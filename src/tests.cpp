@@ -19,7 +19,7 @@ void drawGrid(grid_t& grid) {
     }
   };
 
-  pather::forEachNode(grid, printNodes);
+  forVec2D<int>(grid, printNodes);
 }
 
 void drawMap(map_t& map) {
@@ -72,7 +72,7 @@ void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {
       total += n;
     };
 
-    pather::forEachNode(*grid, totalDifficulty);
+    forVec2D<int>(*grid, totalDifficulty);
     std::cout << "Total of all node difficulties is " << total << "\n";
 
     /* Actual per grid tests go here */

@@ -7,7 +7,7 @@ void drawGrid(grid_t& grid) {
 
   auto printNodes = [&grid](int x, int y, int& n) {
 
-    // std::cout << "(" << x << ", " << y << ")";
+    // std::cout << "(" << x << ", " << y << ")"; // print grid coords
 
     if (y == grid.at(0).size() - 1) {
       std::cout << n << "\n";
@@ -19,17 +19,30 @@ void drawGrid(grid_t& grid) {
   pather::forEachNode(grid, printNodes);
 }
 
-bool testGrid() {
+void drawMap(map_t& map) {
 
-  auto flat = 1;
-  auto flatDifficulty = [flat](int x, int y, int& n) {
-    n = flat;
+  auto w = 0;
+  auto h = 0;
+  
+  for (auto& keyNode : map) {
+
+    // get height and width by comparing for max keyNode.first, keyNode.second
+  }
+
+  auto prevGrid = std::make_unique<grid_t>(w, std::vector<index_t>(h));
+
+  auto fillGrid = [&grid](int x, int y, int& n) {
+
+                    grid.at(x).at(y) = map[index_t(x, y)];
   };
+  
+  pather::forEachNode(grid, fillGrid);
+  
+}
 
-  auto w = 12;
-  auto h = 24;
-  std::unique_ptr<grid_t> flatGrid = pather::makeGrid(w, h, flatDifficulty);
-  std::cout << "flatGrid is " << flatGrid->size() << " elements wide and " <<
+bool testGrid(std::vector<grid_t*>& grids) {
+
+  std::cout << "Grid is " << flatGrid->size() << " elements wide and " <<
                                  flatGrid->at(0).size() << " elements tall\n";
   
   auto total = 0;
@@ -41,8 +54,7 @@ bool testGrid() {
   std::cout << "Total of all node difficulties is " << total << "\n";
 
   if (total / flat != w * h) {
-    std::cout << "flatGrid total difficulty does not match size\n";
-    return true;
+    std::cout << "FAULT: grid total difficulty does not match size\n";
   }
 
   std::cout << "Grid tests within limits\n";
@@ -53,7 +65,20 @@ bool testGrid() {
 
 int main(int argc, char** argv) {
 
-  testGrid();
+  auto grids = std::vector<grid_t>();
+
+  auto flat = 1;
+  auto flatDifficulty = [flat](int x, int y, int& n) {
+    n = flat;
+  };
+
+  auto w = 12;
+  auto h = 24;
+  std::unique_ptr<grid_t> flatGrid = pather::makeGrid(w, h, flatDifficulty);
+
+  grids.push_back(flatGrid);
+ 
+  testGrids(grids);
 
   std::cout << "Tests complete\n";
   return 0;

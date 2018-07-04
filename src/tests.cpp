@@ -4,7 +4,7 @@
 #include "pather.hpp"
 
 // map realized as grid for drawing etc
-using prev_grid_t = std::vector<std::vector<std::pair<int, int>>>;
+using prev_grid_t = std::vector<std::vector<index_t>>;
 
 void drawGrid(grid_t& grid) {
 
@@ -32,15 +32,15 @@ void drawMap(map_t& map) {
     // get height and width by comparing for max keyNode.first, keyNode.second
   }
 
-  auto prevGrid = std::make_unique<prev_grid_t>(w, std::vector<std::pair<int, int>>(h));
+  auto prevGrid = std::make_unique<prev_grid_t>(w, std::vector<index_t>(h));
 
-  auto fillGrid = [&prevGrid, &map](int x, int y, int& n) {
+  auto fillGrid = [&prevGrid, &map](int x, int y, index_t& n) {
 
     // puts the value of previous node in path map into grid
-    prevGrid->at(x).at(y) = map[std::pair<int, int>(x, y)];
+    n = map[index_t(x, y)];
   };
   
-  // pather::forEachNode(prevGrid, fillGrid); // FUCK; template the 2D array traversals?
+  forVec2D<index_t>(*prevGrid, fillGrid); // templated!
 }
 
 std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {

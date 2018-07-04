@@ -78,10 +78,16 @@ Pathfinding algorithms:
 
 ** Planning:
 
-*** TODO pluralize testing of grids
+*** DONE pluralize testing of grids
+    CLOSED: [2018-07-04 Wed 12:22]
 *** TODO finish out grid fill -> map draw in tests
 *** TODO CHECK ALL grid parsing to make sure row is dominate col is subordinate
-*** TODO check grid draw orientation
+*** DONE check grid draw functionality
+    CLOSED: [2018-07-04 Wed 12:27]
+    it works :o)
+*** DONE check grid draw orientation
+    CLOSED: [2018-07-04 Wed 12:28]
+    it draws out Y ->
 *** TODO test breadthfirst
 
 

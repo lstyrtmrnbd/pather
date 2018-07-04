@@ -2,7 +2,7 @@
 
 std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty) {
   
-  std::unique_ptr<grid_t> ugp(new std::vector<std::vector<int>>(w, std::vector<int>(h)));
+  auto ugp = std::make_unique<grid_t>(w, std::vector<int>(h));
 
   forEachNode(*ugp, setDifficulty);
 
@@ -36,7 +36,7 @@ bool pather::inGridBounds(const grid_t& grid, index_t index) {
 
 std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index) {
 
-  std::unique_ptr<path_t> neighbors(new path_t());
+  auto neighbors = std::make_unique<path_t>();
   
   auto N = index_t(index.first, index.second++);
   auto E = index_t(index.first++, index.second);
@@ -56,7 +56,7 @@ std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
   std::queue<index_t> frontier = std::queue<index_t>();
   frontier.push(start);
 
-  std::unique_ptr<map_t> ump(new map_t());
+  auto ump = std::make_unique<map_t>();
   ump->insert(std::pair<index_t, index_t>(start, start));
 
   while (!frontier.empty()) {

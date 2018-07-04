@@ -6,41 +6,60 @@
 // map realized as grid for drawing etc
 using prev_grid_t = std::vector<std::vector<index_t>>;
 
+std::unique_ptr<prev_grid_t> makePrevGrid(const map_t& map) {
+
+  auto w = 0;
+  auto h = 0;
+  
+  for (auto kvPair : map) {
+
+    auto x = kvPair.first.first;
+    auto y = kvPair.first.second;
+    
+    if (x > w) w = x;
+    if (y > h) h = y;
+  }
+
+  auto prevGrid = std::make_unique<prev_grid_t>(w + 1, std::vector<index_t>(h + 1));
+
+  auto fillGrid = [&prevGrid, &map](int x, int y, index_t& n) {
+
+    // puts the value of previous node in path map into grid
+    // using [] operator can insert if key doesn't exist; map is const, use .at()
+    n = map.at(index_t(x, y));
+  };
+  
+  forVec2D<index_t>(*prevGrid, fillGrid); // templated!
+
+  return prevGrid;
+}
+
 void drawGrid(grid_t& grid) {
 
   auto printNodes = [&grid](int x, int y, int& n) {
 
-    // std::cout << "(" << x << ", " << y << ")"; // print grid coords
-
-    if (y == grid.at(0).size() - 1) {
+    if (x == grid.size() - 1) {
       std::cout << n << "\n";
     } else {
       std::cout << n;
     }
   };
 
-  forVec2D<int>(grid, printNodes);
+  forVec2DInner<int>(grid, printNodes);
 }
 
-void drawMap(map_t& map) {
+void drawPrevGrid(prev_grid_t& grid) {
 
-  auto w = 0;
-  auto h = 0;
-  
-  for (auto& keyNode : map) {
+  auto printNodes = [&grid](int x, int y, index_t& n) {
 
-    // get height and width by comparing for max keyNode.first, keyNode.second
-  }
-
-  auto prevGrid = std::make_unique<prev_grid_t>(w, std::vector<index_t>(h));
-
-  auto fillGrid = [&prevGrid, &map](int x, int y, index_t& n) {
-
-    // puts the value of previous node in path map into grid
-    n = map[index_t(x, y)];
   };
-  
-  forVec2D<index_t>(*prevGrid, fillGrid); // templated!
+}
+
+void drawMap(const map_t& map) {
+
+  auto prevGrid = makePrevGrid(map);
+
+  drawPrevGrid(*prevGrid);
 }
 
 std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {

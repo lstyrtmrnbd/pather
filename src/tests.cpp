@@ -20,7 +20,7 @@ std::unique_ptr<prev_grid_t> makePrevGrid(const map_t& map) {
     if (y > h) h = y;
   }
 
-  auto prevGrid = std::make_unique<prev_grid_t>(w + 1, std::vector<index_t>(h + 1));
+  auto prevGrid = std::make_unique<prev_grid_t>(w, std::vector<index_t>(h));
 
   auto fillGrid = [&prevGrid, &map](int x, int y, index_t& n) {
 
@@ -38,11 +38,8 @@ void drawGrid(grid_t& grid) {
 
   auto printNodes = [&grid](int x, int y, int& n) {
 
-    if (x == grid.size() - 1) {
-      std::cout << n << "\n";
-    } else {
-      std::cout << n;
-    }
+    std::cout << n;
+    if (x == grid.size() - 1) std::cout << std::endl;
   };
 
   forVec2DInner<int>(grid, printNodes);
@@ -52,7 +49,15 @@ void drawPrevGrid(prev_grid_t& grid) {
 
   auto printNodes = [&grid](int x, int y, index_t& n) {
 
+    if (n.first != x) {
+      std::cout << "-";
+    } else if (n.second != y) {
+      std::cout << "|";
+    }
+    if (x == grid.size() - 1) std::cout << std::endl;
   };
+
+  forVec2DInner<index_t>(grid, printNodes);
 }
 
 void drawMap(const map_t& map) {
@@ -79,6 +84,14 @@ std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {
   return grids;
 }
 
+void testBreadthFirst(const grid_t& grid) {
+
+  auto startPoint = index_t(6, 6);
+  auto prevMap = pather::breadthFirst(grid, startPoint);
+
+  drawMap(*prevMap);
+}
+
 void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {
 
   for (auto& grid : grids) {
@@ -96,8 +109,11 @@ void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {
 
     /* Actual per grid tests go here */
     
-    std::cout << "Attempting grid draw:\n";
+    std::cout << "Drawing grid difficulties:\n";
     drawGrid(*grid);
+
+    std::cout << "Testing breadthFirst on grid:\n";
+    testBreadthFirst(*grid);
   }
 
   std::cout << "Grid tests within limits\n";

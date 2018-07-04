@@ -1,7 +1,10 @@
 #include <iostream>
+#include <memory>
+#include <utility> // std::move
 #include "pather.hpp"
 
-/* Structure tests */
+// map realized as grid for drawing etc
+using prev_grid_t = std::vector<std::vector<std::pair<int, int>>>;
 
 void drawGrid(grid_t& grid) {
 
@@ -29,43 +32,20 @@ void drawMap(map_t& map) {
     // get height and width by comparing for max keyNode.first, keyNode.second
   }
 
-  auto prevGrid = std::make_unique<grid_t>(w, std::vector<index_t>(h));
+  auto prevGrid = std::make_unique<prev_grid_t>(w, std::vector<std::pair<int, int>>(h));
 
-  auto fillGrid = [&grid](int x, int y, int& n) {
+  auto fillGrid = [&prevGrid, &map](int x, int y, int& n) {
 
-                    grid.at(x).at(y) = map[index_t(x, y)];
+    // puts the value of previous node in path map into grid
+    prevGrid->at(x).at(y) = map[std::pair<int, int>(x, y)];
   };
   
-  pather::forEachNode(grid, fillGrid);
-  
+  // pather::forEachNode(prevGrid, fillGrid); // FUCK; template the 2D array traversals?
 }
 
-bool testGrid(std::vector<grid_t*>& grids) {
+std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {
 
-  std::cout << "Grid is " << flatGrid->size() << " elements wide and " <<
-                                 flatGrid->at(0).size() << " elements tall\n";
-  
-  auto total = 0;
-  auto totalDifficulty = [&total](int x, int y, int& n) {
-    total += n;
-  };
-
-  pather::forEachNode(*flatGrid, totalDifficulty);
-  std::cout << "Total of all node difficulties is " << total << "\n";
-
-  if (total / flat != w * h) {
-    std::cout << "FAULT: grid total difficulty does not match size\n";
-  }
-
-  std::cout << "Grid tests within limits\n";
-  std::cout << "Attempting grid draw:\n";
-  drawGrid(*flatGrid);
-  return false;
-}
-
-int main(int argc, char** argv) {
-
-  auto grids = std::vector<grid_t>();
+  auto grids = std::make_unique<std::vector<std::unique_ptr<grid_t>>>();
 
   auto flat = 1;
   auto flatDifficulty = [flat](int x, int y, int& n) {
@@ -74,11 +54,41 @@ int main(int argc, char** argv) {
 
   auto w = 12;
   auto h = 24;
-  std::unique_ptr<grid_t> flatGrid = pather::makeGrid(w, h, flatDifficulty);
+  
+  grids->push_back(pather::makeGrid(w, h, flatDifficulty));
 
-  grids.push_back(flatGrid);
- 
-  testGrids(grids);
+  return grids;
+}
+
+void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {
+
+  for (auto& grid : grids) {
+
+    std::cout << "Grid is " << grid->size() << " elements wide and " <<
+                                 grid->at(0).size() << " elements tall\n";
+  
+    auto total = 0;
+    auto totalDifficulty = [&total](int x, int y, int& n) {
+      total += n;
+    };
+
+    pather::forEachNode(*grid, totalDifficulty);
+    std::cout << "Total of all node difficulties is " << total << "\n";
+
+    /* Actual per grid tests go here */
+    
+    std::cout << "Attempting grid draw:\n";
+    drawGrid(*grid);
+  }
+
+  std::cout << "Grid tests within limits\n";
+}
+
+int main(int argc, char** argv) {
+
+  auto grids = makeGrids();
+  
+  testGrids(*grids);
 
   std::cout << "Tests complete\n";
   return 0;

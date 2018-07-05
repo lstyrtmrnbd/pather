@@ -12,6 +12,9 @@ std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty
 // finds the sequence of indexes leading to the start of the map from specified point
 std::unique_ptr<path_t> pather::findPath(const map_t& map, index_t end) {
 
+  // return wrapped nullptr if end point doesn't exist in map
+  if(map.find(end) == map.end()) return std::unique_ptr<path_t>(nullptr);
+  
   auto path = std::make_unique<path_t>();
   
   auto current = end;

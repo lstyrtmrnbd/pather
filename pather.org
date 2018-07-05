@@ -32,7 +32,13 @@ Pathfinding algorithms:
   
   + OOP Graph of Nodes approach or just typedefs and free functions?
     - decided on free functions
-  
+  + how to handle impassability?
+    - use negative difficulty values to represent impassable nodes
+    - how to represent it in the map?
+      * use index == index? that would impact the current case it's used in (start point detection)
+  + what if impassability eliminates any possible path from one point to another?
+    - get as close as possible?
+
 *** Statements:
     + wish I had a nice logging system
 

@@ -13,7 +13,6 @@ std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty
 std::unique_ptr<path_t> pather::findPath(const map_t& map, index_t end) {
 
   auto path = std::make_unique<path_t>();
-  path->push_back(end);
   
   auto current = end;
   auto prev = map.at(current);
@@ -26,6 +25,8 @@ std::unique_ptr<path_t> pather::findPath(const map_t& map, index_t end) {
     prev = map.at(current);
   }
 
+  path->push_back(current);
+ 
   return path;
 }
 

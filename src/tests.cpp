@@ -10,7 +10,7 @@ std::string indexToString(index_t index) {
 
   auto out = std::string();
 
-  out = out + "( " + std::to_string(index.first) + ", " + std::to_string(index.second) + ")";
+  out = out + "(" + std::to_string(index.first) + ", " + std::to_string(index.second) + ")";
   
   return out;
 }
@@ -43,14 +43,14 @@ std::unique_ptr<prev_grid_t> makePrevGrid(const map_t& map) {
       n = map.at(key);
     } catch (const std::out_of_range& oor) {
       // std::cerr << "OOR Error: " << oor.what() << " ";
-      std::cout << "(" << key.first << ", " << key.second << ") ";
+      std::cout << indexToString(key) << " ";
       failedKeys += 1;
     }
   };
   
   forVec2D<index_t>(*prevGrid, fillGrid); // templated!
 
-  std::cout << "prevGrid made, but with " << failedKeys << " failed keys\n";
+  std::cout << "prevGrid made, with " << failedKeys << " failed keys\n";
   return prevGrid;
 }
 
@@ -106,14 +106,19 @@ std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {
 
 void testBreadthFirst(const grid_t& grid, index_t start, index_t end) {
 
-  std::cout << "breadthFirst from (" << start.first << ", " << start.second <<
-    ") to (" << end.first << ", " << end.second << ")\n";
+  std::cout << "breadthFirst from " << indexToString(start) << " to " << indexToString(end) << "\n";
   auto prevMap = pather::breadthFirst(grid, start);
 
   drawMap(*prevMap);
 
   auto path = pather::findPath(*prevMap, end);
 
+  std::cout << "Path:\n";
+  for (auto i = path->begin(); i != path->end(); ++i) {
+
+    std::cout << indexToString(*i) << " ";
+  }
+  std::cout << "\n";
 }
 
 void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {

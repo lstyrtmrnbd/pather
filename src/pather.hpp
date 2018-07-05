@@ -1,6 +1,7 @@
 #ifndef PATHER_INCLUDE
 #define PATHER_INCLUDE
 #include <functional>
+#include <iostream> // error checking
 #include <map>
 #include <memory>
 #include <queue>

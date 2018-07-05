@@ -9,10 +9,10 @@ std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty
   return ugp;
 }
 
+// assumes all inner vectors are the same size as the first
 bool pather::inGridBounds(const grid_t& grid, index_t index) {
 
   if (index.first > (signed)grid.size() || index.first < 0) return false;
-  
   if (index.second > (signed)grid[0].size() || index.second < 0) return false;
 
   return true;
@@ -56,6 +56,7 @@ std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
 	ump->insert(std::pair<index_t, index_t>(next, current));
       }
     }
-  }  
+  }
+  std::cout << "breadthFirst filled a map with " << ump->size() << " keys\n";
   return ump;
 }

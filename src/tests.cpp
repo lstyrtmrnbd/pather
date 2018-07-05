@@ -1,6 +1,5 @@
 #include <iostream>
 #include <memory>
-#include <utility> // std::move
 #include "pather.hpp"
 
 // map realized as grid for drawing etc
@@ -22,15 +21,26 @@ std::unique_ptr<prev_grid_t> makePrevGrid(const map_t& map) {
 
   auto prevGrid = std::make_unique<prev_grid_t>(w, std::vector<index_t>(h));
 
-  auto fillGrid = [&prevGrid, &map](int x, int y, index_t& n) {
+  auto failedKeys = 0; //ec
 
-    // puts the value of previous node in path map into grid
-    // using [] operator can insert if key doesn't exist; map is const, use .at()
-    n = map.at(index_t(x, y));
+  // puts the value of previous node in path map into grid
+  // using [] operator can insert if key doesn't exist; map is const, use .at()
+  auto fillGrid = [&prevGrid, &map, &failedKeys](int x, int y, index_t& n) {
+
+    auto key = index_t(x, y);
+    
+    try {
+      n = map.at(key);
+    } catch (const std::out_of_range& oor) {
+      // std::cerr << "OOR Error: " << oor.what() << " ";
+      std::cout << "(" << key.first << ", " << key.second << ") ";
+      failedKeys += 1;
+    }
   };
   
   forVec2D<index_t>(*prevGrid, fillGrid); // templated!
 
+  std::cout << "prevGrid made, but with " << failedKeys << " failed keys\n";
   return prevGrid;
 }
 

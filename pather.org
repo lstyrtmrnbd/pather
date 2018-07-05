@@ -17,6 +17,7 @@ Pathfinding algorithms:
 ** Architecture:
 
 *** Examples:
+    Some example calls to imagine what the API might look like
 **** OOP:
      pather::Graph* graph = pather::buildGraph(simple_2D_input_structure)
   
@@ -30,12 +31,10 @@ Pathfinding algorithms:
 *** Questions and Answers:
   
   + OOP Graph of Nodes approach or just typedefs and free functions?
-    
+    - decided on free functions
+  
 *** Statements:
-  + typedefs and free funcs for now, wrap later if necessary
-  + the upside of wrapping in classes is only having to build one good call to construct the nested structures  
-  + return raw pointers and let callers traffic in ownership
-    - do need to tell them "you own this now" however...
+    + wish I had a nice logging system
 
 ** Data choices:
 
@@ -81,15 +80,18 @@ Pathfinding algorithms:
 *** DONE pluralize testing of grids
     CLOSED: [2018-07-04 Wed 12:22]
 *** TODO finish out grid fill -> map draw in tests
-*** TODO CHECK ALL grid parsing to make sure row is dominate col is subordinate
+    and now fix it
+*** DONE CHECK ALL grid parsing to make sure row is dominate col is subordinate
+    CLOSED: [2018-07-04 Wed 20:00]
 *** DONE check grid draw functionality
     CLOSED: [2018-07-04 Wed 12:27]
     it works :o)
 *** DONE check grid draw orientation
     CLOSED: [2018-07-04 Wed 12:28]
     it draws out Y ->
-*** TODO test breadthfirst
-
-
+*** DONE test breadthfirst
+    CLOSED: [2018-07-04 Wed 20:00]
+*** TODO fix breadthfirst
+    check the state of the structures around the function interfaces
 
 

@@ -12,8 +12,11 @@ std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty
 // assumes all inner vectors are the same size as the first
 bool pather::inGridBounds(const grid_t& grid, index_t index) {
 
-  if (index.first > (signed)grid.size() || index.first < 0) return false;
-  if (index.second > (signed)grid[0].size() || index.second < 0) return false;
+  int w = static_cast<int>(grid.size());
+  int h = static_cast<int>(grid[0].size());
+  
+  if (index.first < 0 || index.second < 0) return false;
+  if (index.first > w || index.second > h) return false;
 
   return true;
 }
@@ -22,10 +25,10 @@ std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index)
 
   auto neighbors = std::make_unique<path_t>();
   
-  auto N = index_t(index.first, index.second++);
-  auto E = index_t(index.first++, index.second);
-  auto S = index_t(index.first, index.second--);
-  auto W = index_t(index.first--, index.second);
+  auto N = index_t(index.first, index.second + 1);
+  auto E = index_t(index.first + 1, index.second);
+  auto S = index_t(index.first, index.second - 1);
+  auto W = index_t(index.first - 1, index.second);
 
   if (inGridBounds(grid, N)) neighbors->push_back(N);
   if (inGridBounds(grid, E)) neighbors->push_back(E);

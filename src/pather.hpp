@@ -21,7 +21,7 @@ namespace pather {
   bool inGridBounds(const grid_t& grid, index_t index);
 
   std::unique_ptr<path_t> listNeighbors(const grid_t& grid, index_t index);
-  std::unique_ptr<path_t> findPath(const map_t& map); 
+  std::unique_ptr<path_t> findPath(const map_t& map, index_t end); 
   
   std::unique_ptr<map_t> breadthFirst(const grid_t& grid, index_t start);
   std::unique_ptr<map_t> dijkstras(const grid_t& grid);

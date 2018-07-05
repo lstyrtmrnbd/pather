@@ -9,6 +9,26 @@ std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty
   return ugp;
 }
 
+// finds the sequence of indexes leading to the start of the map from specified point
+std::unique_ptr<path_t> pather::findPath(const map_t& map, index_t end) {
+
+  auto path = std::make_unique<path_t>();
+  path->push_back(end);
+  
+  auto current = end;
+  auto prev = map.at(current);
+
+  // start index is mapped to itself
+  while (prev != current) {
+
+    path->push_back(current);
+    current = prev;
+    prev = map.at(current);
+  }
+
+  return path;
+}
+
 // assumes all inner vectors are the same size as the first
 bool pather::inGridBounds(const grid_t& grid, index_t index) {
 
@@ -21,6 +41,7 @@ bool pather::inGridBounds(const grid_t& grid, index_t index) {
   return true;
 }
 
+// neighbor index determination in four cardinal directions
 std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index) {
 
   auto neighbors = std::make_unique<path_t>();

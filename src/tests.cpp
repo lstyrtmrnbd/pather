@@ -1,9 +1,19 @@
 #include <iostream>
 #include <memory>
+#include <string>
 #include "pather.hpp"
 
 // map realized as grid for drawing etc
 using prev_grid_t = std::vector<std::vector<index_t>>;
+
+std::string indexToString(index_t index) {
+
+  auto out = std::string();
+
+  out = out + "( " + std::to_string(index.first) + ", " + std::to_string(index.second) + ")";
+  
+  return out;
+}
 
 std::unique_ptr<prev_grid_t> makePrevGrid(const map_t& map) {
 
@@ -94,12 +104,16 @@ std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {
   return grids;
 }
 
-void testBreadthFirst(const grid_t& grid) {
+void testBreadthFirst(const grid_t& grid, index_t start, index_t end) {
 
-  auto startPoint = index_t(6, 6);
-  auto prevMap = pather::breadthFirst(grid, startPoint);
+  std::cout << "breadthFirst from (" << start.first << ", " << start.second <<
+    ") to (" << end.first << ", " << end.second << ")\n";
+  auto prevMap = pather::breadthFirst(grid, start);
 
   drawMap(*prevMap);
+
+  auto path = pather::findPath(*prevMap, end);
+
 }
 
 void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {
@@ -123,7 +137,7 @@ void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {
     drawGrid(*grid);
 
     std::cout << "Testing breadthFirst on grid:\n";
-    testBreadthFirst(*grid);
+    testBreadthFirst(*grid, index_t(3, 3), index_t(9, 9));
   }
 
   std::cout << "Grid tests within limits\n";

@@ -30,7 +30,7 @@ void forVec2D(std::vector<std::vector<T>>& vec2D,
  * Iterate through a 2D vector and apply a function,
  * but with the inner vector as the outer iterator
  *
- * Makes the assumption that all inner vectors are the same length as the first!
+ * !Makes the assumption that all inner vectors are the same length as the first!
  */
 
 template<typename T>

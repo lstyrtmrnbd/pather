@@ -63,13 +63,14 @@ std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index)
   return neighbors;
 }
 
+// explores all nodes equally, no account for difficulty values
 std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
 
   auto frontier = std::make_unique<std::queue<index_t>>();
   frontier->push(start);
 
-  auto ump = std::make_unique<map_t>();
-  ump->insert(std::pair<index_t, index_t>(start, start));
+  auto previousMap = std::make_unique<map_t>();
+  previousMap->insert(std::pair<index_t, index_t>(start, start));
 
   while (!frontier->empty()) {
     
@@ -79,12 +80,23 @@ std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
     auto neighbors = listNeighbors(grid, current);
     for (auto next : *neighbors) {
 
-      if (ump->find(next) == ump->end()) {
+      if (previousMap->find(next) == previousMap->end()) {
 	frontier->push(next);
-	ump->insert(std::pair<index_t, index_t>(next, current));
+	previousMap->insert(std::pair<index_t, index_t>(next, current));
       }
     }
   }
-  std::cout << "breadthFirst filled a map with " << ump->size() << " keys\n";
-  return ump;
+  std::cout << "breadthFirst filled a map with " << previousMap->size() << " keys\n";
+  return previousMap;
+}
+
+std::unique_ptr<map_t> pather::dijkstra(const grid_t grid, index_t start) {
+
+  // std::greater as comparator so the lower values come out first
+  auto priorityQ = std::make_unique<std::priority_queue<int>>(std::greater<int>());
+
+  auto previousMap = std::make_unique<map_t>();
+  
+  return  previousMap;
+  
 }

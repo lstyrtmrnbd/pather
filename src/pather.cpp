@@ -90,13 +90,20 @@ std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
   return previousMap;
 }
 
-std::unique_ptr<map_t> pather::dijkstra(const grid_t grid, index_t start) {
+std::unique_ptr<map_t> pather::dijkstra(const grid_t& grid, index_t start) {
 
-  // std::greater as comparator so the lower values come out first
-  auto priorityQ = std::make_unique<std::priority_queue<int>>(std::greater<int>());
+  // comparator lambda so lower cost nodes are returned first from priority queue
+  std::function<bool(const cost_t&, const cost_t&)> costGreater = [](const cost_t& a, const cost_t& b) {
 
-  auto previousMap = std::make_unique<map_t>();
+    return a.second > b.second;
+  };
   
+  auto frontier = std::make_unique<std::priority_queue<cost_t>>();
+  //frontier->push();
+  
+  auto previousMap = std::make_unique<map_t>();
+  previousMap->insert(std::pair<index_t, index_t>(start, start));
+
   return  previousMap;
   
 }

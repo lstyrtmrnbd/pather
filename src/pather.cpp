@@ -45,8 +45,8 @@ bool pather::inGridBounds(const grid_t& grid, index_t index) {
   return true;
 }
 
-// generate list of Von Neumann neighborhood
-std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index) {
+// generate list of Von Neumann neighborhood, rather explicitly
+std::unique_ptr<path_t> pather::listNeighborsVonNeumann(const grid_t& grid, index_t index) {
 
   auto neighbors = std::make_unique<path_t>();
   
@@ -93,7 +93,7 @@ std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
     index_t current = frontier->front();
     frontier->pop();
 
-    auto neighbors = listNeighbors(grid, current);
+    auto neighbors = listNeighborsVonNeumann(grid, current);
     for (auto next : *neighbors) {
 
       if (previousMap->find(next) == previousMap->end()) {

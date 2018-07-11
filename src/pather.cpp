@@ -119,10 +119,37 @@ std::unique_ptr<map_t> pather::dijkstra(const grid_t& grid, index_t start) {
 						       std::vector<cost_t>,
 						       std::function<bool(cost_t, cost_t)>>>(costGreater);
   frontier->push(cost_t(start, 0));
+
+  auto costSoFar = std::make_unique<total_cost_t>();
+  costSoFar->insert(std::pair<index_t, int>(start, 0));
   
   auto previousMap = std::make_unique<map_t>();
   previousMap->insert(std::pair<index_t, index_t>(start, start));
 
-  return  previousMap;
+  while (!frontier->empty()) {
+
+    index_t current = frontier->top().first;
+    frontier->pop();
+
+    auto neighbors = listNeighborsVonNeumann(grid, current);
+    for (auto next : *neighbors) {
+
+      int newCost = costSoFar->at(current) + grid.at(next.first).at(next.second);
+
+      if (costSoFar->find(next) == costSoFar->end()) {
+
+	costSoFar->insert(std::pair<index_t, int>(next, newCost));
+	frontier->push(cost_t(next, newCost));
+	previousMap->insert(std::pair<index_t, index_t>(next, current));
+	
+      } else if (costSoFar->at(next) < newCost) {
+
+	costSoFar->at(next) = newCost;
+	frontier->push(cost_t(next, newCost));
+	previousMap->insert(std::pair<index_t, index_t>(next, current));
+      }
+    }
+  }
   
+  return  previousMap;
 }

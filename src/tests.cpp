@@ -1,10 +1,14 @@
 #include <iostream>
+#include <functional>
 #include <memory>
 #include <string>
 #include "pather.hpp"
 
 // map realized as grid for drawing etc
 using prev_grid_t = std::vector<std::vector<index_t>>;
+
+// function type of map generating path finding functions
+using map_function_t = std::function<std::unique_ptr<map_t>(const grid_t&, index_t)>;
 
 std::string indexToString(index_t index) {
 
@@ -104,10 +108,10 @@ std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {
   return grids;
 }
 
-void testBreadthFirst(const grid_t& grid, index_t start, index_t end) {
+void testMappingFunction(const grid_t& grid, index_t start, index_t end, map_function_t func) {
 
-  std::cout << "breadthFirst from " << indexToString(start) << " to " << indexToString(end) << "\n";
-  auto prevMap = pather::breadthFirst(grid, start);
+  std::cout << "Mapping and then extracting path from " << indexToString(start) << " to " << indexToString(end) << "\n";
+  auto prevMap = func(grid, start);
 
   drawMap(*prevMap);
 
@@ -151,8 +155,11 @@ void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {
     drawGrid(*grid);
 
     std::cout << "Testing breadthFirst on grid:\n";
-    testBreadthFirst(*grid, index_t(3, 3), index_t(9, 9));
+    testMappingFunction(*grid, index_t(3, 3), index_t(9, 9), pather::breadthFirst);
 
+    std::cout << "Testing dijkstra on grid:\n";
+    testMappingFunction(*grid, index_t(3, 3), index_t(9, 9), pather::dijkstra);
+    
     std::cout << "Moore neighbors of (3, 3) are ";
     testNeighbors(*grid, index_t(3, 3));
     std::cout << "\n";

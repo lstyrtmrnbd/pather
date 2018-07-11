@@ -33,11 +33,11 @@ std::unique_ptr<path_t> pather::findPath(const map_t& map, index_t end) {
   return path;
 }
 
-// assumes all inner vectors are the same size as the first
+// could be a more general test for validity that accounts for passability
 bool pather::inGridBounds(const grid_t& grid, index_t index) {
 
   int w = static_cast<int>(grid.size());
-  int h = static_cast<int>(grid[0].size());
+  int h = static_cast<int>(grid[0].size()); // assumes all inner vectors are the same size as the first
   
   if (index.first < 0 || index.second < 0) return false;
   if (index.first > w || index.second > h) return false;
@@ -45,7 +45,7 @@ bool pather::inGridBounds(const grid_t& grid, index_t index) {
   return true;
 }
 
-// neighbor index determination in four cardinal directions
+// generate list of Von Neumann neighborhood
 std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index) {
 
   auto neighbors = std::make_unique<path_t>();
@@ -61,6 +61,19 @@ std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index)
   if (inGridBounds(grid, W)) neighbors->push_back(W);
 
   return neighbors;
+}
+
+// generate list of Moore neighborhood
+std::unique_ptr<path_t> pather::list8Neighbors(const grid_t& grid, index_t index) {
+
+  auto neighbors = std::make_unique<path_t>();
+
+  auto length = 8; // 3^dimensions - 1
+
+  for (auto i = 0; i < 8; ++i) {
+
+    auto index = i < length / 2 ? i : i - 1;
+  }
 }
 
 // explores all nodes equally, no account for difficulty values
@@ -90,16 +103,19 @@ std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
   return previousMap;
 }
 
+// closer to Uniform Cost Search, called dijkstra for historical considerations
 std::unique_ptr<map_t> pather::dijkstra(const grid_t& grid, index_t start) {
 
-  // comparator lambda so lower cost nodes are returned first from priority queue
+  // comparator function so lower cost nodes are returned first from priority queue
   std::function<bool(const cost_t&, const cost_t&)> costGreater = [](const cost_t& a, const cost_t& b) {
 
     return a.second > b.second;
   };
   
-  auto frontier = std::make_unique<std::priority_queue<cost_t>>();
-  //frontier->push();
+  auto frontier = std::make_unique<std::priority_queue<cost_t,
+						       std::vector<cost_t>,
+						       std::function<bool(cost_t, cost_t)>>>(costGreater);
+  frontier->push(cost_t(start, 0));
   
   auto previousMap = std::make_unique<map_t>();
   previousMap->insert(std::pair<index_t, index_t>(start, start));

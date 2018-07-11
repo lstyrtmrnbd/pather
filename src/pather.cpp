@@ -134,19 +134,21 @@ std::unique_ptr<map_t> pather::dijkstra(const grid_t& grid, index_t start) {
     auto neighbors = listNeighborsVonNeumann(grid, current);
     for (auto next : *neighbors) {
 
+      try {
       int newCost = costSoFar->at(current) + grid.at(next.first).at(next.second);
+      
+      if (costSoFar->find(next) == costSoFar->end() || costSoFar->at(next) < newCost) {
 
-      if (costSoFar->find(next) == costSoFar->end()) {
-
-	costSoFar->insert(std::pair<index_t, int>(next, newCost));
+	(*costSoFar)[next] = newCost;
 	frontier->push(cost_t(next, newCost));
-	previousMap->insert(std::pair<index_t, index_t>(next, current));
-	
-      } else if (costSoFar->at(next) < newCost) {
+	previousMap->insert(std::pair<index_t, index_t>(next, current));	
+      }
 
-	costSoFar->at(next) = newCost;
-	frontier->push(cost_t(next, newCost));
-	previousMap->insert(std::pair<index_t, index_t>(next, current));
+      
+      } catch (const std::out_of_range& oor) {
+
+	std::cout << "Values were: first: " << next.first << " second: " << next.second << "\n";
+	return std::unique_ptr<map_t>(nullptr);
       }
     }
   }

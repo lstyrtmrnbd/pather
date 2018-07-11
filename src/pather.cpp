@@ -64,16 +64,19 @@ std::unique_ptr<path_t> pather::listNeighbors(const grid_t& grid, index_t index)
 }
 
 // generate list of Moore neighborhood
-std::unique_ptr<path_t> pather::list8Neighbors(const grid_t& grid, index_t index) {
+std::unique_ptr<path_t> pather::listNeighborsMoore(const grid_t& grid, index_t index) {
 
   auto neighbors = std::make_unique<path_t>();
 
-  auto length = 8; // 3^dimensions - 1
+  for (int x = -1; x < 2; ++x) {
+    for (int y = -1; y < 2; ++y) {
+      auto candidate = index_t(index.first + x, index.second + y);
 
-  for (auto i = 0; i < 8; ++i) {
-
-    auto index = i < length / 2 ? i : i - 1;
+      if (inGridBounds(grid, candidate) && candidate != index) neighbors->push_back(candidate);
+    }
   }
+
+  return neighbors;
 }
 
 // explores all nodes equally, no account for difficulty values

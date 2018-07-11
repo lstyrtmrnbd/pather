@@ -121,6 +121,15 @@ void testBreadthFirst(const grid_t& grid, index_t start, index_t end) {
   std::cout << "\n";
 }
 
+void testNeighbors(const grid_t& grid, index_t index) {
+
+  auto neighbors = pather::listNeighborsMoore(grid, index);
+
+  for (auto& neighbor : *neighbors) {
+    std::cout << indexToString(neighbor) << " ";
+  }
+}
+
 void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {
 
   for (auto& grid : grids) {
@@ -143,6 +152,10 @@ void testGrids(std::vector<std::unique_ptr<grid_t>>& grids) {
 
     std::cout << "Testing breadthFirst on grid:\n";
     testBreadthFirst(*grid, index_t(3, 3), index_t(9, 9));
+
+    std::cout << "Moore neighbors of (3, 3) are ";
+    testNeighbors(*grid, index_t(3, 3));
+    std::cout << "\n";
   }
 
   std::cout << "Grid tests within limits\n";

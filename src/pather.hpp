@@ -34,11 +34,10 @@ using total_cost_t = std::map<index_t, int>;
 namespace pather {
 
   bool inGridBounds(const grid_t& grid, index_t index);
-  bool passable(int difficulty) { return difficulty > 0;}
-  
   std::unique_ptr<grid_t> makeGrid(int w, int h, node_func_t setDifficulty);
 
   std::unique_ptr<path_t> listNeighbors(const grid_t& grid, index_t index);
+  std::unique_ptr<path_t> listNeighborsMoore(const grid_t& grid, index_t index);
   std::unique_ptr<path_t> findPath(const map_t& map, index_t end); 
   
   std::unique_ptr<map_t> breadthFirst(const grid_t& grid, index_t start);

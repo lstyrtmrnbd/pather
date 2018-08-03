@@ -28,33 +28,20 @@ std::unique_ptr<prev_grid_t> makePrevGrid(const map_t& map) {
 
     auto x = kvPair.first.first;
     auto y = kvPair.first.second;
-    
     if (x > w) w = x;
     if (y > h) h = y;
   }
 
   auto prevGrid = std::make_unique<prev_grid_t>(w, std::vector<index_t>(h));
 
-  auto failedKeys = 0; //ec
-
   // puts the value of previous node in path map into grid
-  // using [] operator can insert if key doesn't exist; map is const, use .at()
-  auto fillGrid = [&prevGrid, &map, &failedKeys](int x, int y, index_t& n) {
-
+  auto fillGrid = [&prevGrid, &map](int x, int y, index_t& n) {
     auto key = index_t(x, y);
-    
-    try {
-      n = map.at(key);
-    } catch (const std::out_of_range& oor) {
-      // std::cerr << "OOR Error: " << oor.what() << " ";
-      std::cout << indexToString(key) << " ";
-      failedKeys += 1;
-    }
+    n = map.at(key);
   };
   
   forVec2D<index_t>(*prevGrid, fillGrid); // templated!
 
-  std::cout << "prevGrid made, with " << failedKeys << " failed keys\n";
   return prevGrid;
 }
 

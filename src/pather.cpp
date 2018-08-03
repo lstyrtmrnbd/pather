@@ -40,7 +40,7 @@ bool pather::inGridBounds(const grid_t& grid, index_t index) {
   int h = static_cast<int>(grid[0].size()); // assumes all inner vectors are the same size as the first
   
   if (index.first < 0 || index.second < 0) return false;
-  if (index.first > w || index.second > h) return false;
+  if (index.first >= w || index.second >= h) return false;
 
   return true;
 }
@@ -134,7 +134,6 @@ std::unique_ptr<map_t> pather::dijkstra(const grid_t& grid, index_t start) {
     auto neighbors = listNeighborsVonNeumann(grid, current);
     for (auto next : *neighbors) {
 
-      try {
       int newCost = costSoFar->at(current) + grid.at(next.first).at(next.second);
       
       if (costSoFar->find(next) == costSoFar->end() || costSoFar->at(next) < newCost) {
@@ -142,13 +141,6 @@ std::unique_ptr<map_t> pather::dijkstra(const grid_t& grid, index_t start) {
 	(*costSoFar)[next] = newCost;
 	frontier->push(cost_t(next, newCost));
 	previousMap->insert(std::pair<index_t, index_t>(next, current));	
-      }
-
-      
-      } catch (const std::out_of_range& oor) {
-
-	std::cout << "Values were: first: " << next.first << " second: " << next.second << "\n";
-	return std::unique_ptr<map_t>(nullptr);
       }
     }
   }

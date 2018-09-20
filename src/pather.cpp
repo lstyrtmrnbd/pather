@@ -1,4 +1,7 @@
 #include "pather.hpp"
+// DEBUG
+#include <thread>
+#include <chrono>
 
 std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty) {
   
@@ -7,6 +10,15 @@ std::unique_ptr<grid_t> pather::makeGrid(int w, int h, node_func_t setDifficulty
   forVec2D<int>(*ugp, setDifficulty);
 
   return ugp;
+}
+
+std::string pather::indexToString(index_t& index) {
+
+  auto out = std::string();
+
+  out = out + "(" + std::to_string(index.first) + ", " + std::to_string(index.second) + ")";
+  
+  return out;
 }
 
 // finds the sequence of indexes leading to the start of the map from specified point
@@ -110,7 +122,7 @@ std::unique_ptr<map_t> pather::breadthFirst(const grid_t& grid, index_t start) {
 std::unique_ptr<map_t> pather::dijkstra(const grid_t& grid, index_t start) {
 
   // comparator function so lower cost nodes are returned first from priority queue
-  std::function<bool(const cost_t&, const cost_t&)> costGreater = [](const cost_t& a, const cost_t& b) {
+  auto costGreater = [](const cost_t& a, const cost_t& b) {
 
     return a.second > b.second;
   };
@@ -131,10 +143,18 @@ std::unique_ptr<map_t> pather::dijkstra(const grid_t& grid, index_t start) {
     index_t current = frontier->top().first;
     frontier->pop();
 
+    std::cout << "Currently considering " << indexToString(current) << "\n";
+    
+    // early exit for current == goal would go here
+
     auto neighbors = listNeighborsVonNeumann(grid, current);
     for (auto next : *neighbors) {
 
       int newCost = costSoFar->at(current) + grid.at(next.first).at(next.second);
+
+      std::cout << "Cost of moving to " << indexToString(next) << " is " << std::to_string(newCost) << "\n";
+
+      std::this_thread::sleep_for(std::chrono::seconds(1));
       
       if (costSoFar->find(next) == costSoFar->end() || costSoFar->at(next) < newCost) {
 

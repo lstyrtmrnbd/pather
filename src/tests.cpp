@@ -10,15 +10,6 @@ using prev_grid_t = std::vector<std::vector<index_t>>;
 // function type of map generating path finding functions
 using map_function_t = std::function<std::unique_ptr<map_t>(const grid_t&, index_t)>;
 
-std::string indexToString(index_t index) {
-
-  auto out = std::string();
-
-  out = out + "(" + std::to_string(index.first) + ", " + std::to_string(index.second) + ")";
-  
-  return out;
-}
-
 std::unique_ptr<prev_grid_t> makePrevGrid(const map_t& map) {
 
   auto w = 0;
@@ -97,7 +88,7 @@ std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {
 
 void testMappingFunction(const grid_t& grid, index_t start, index_t end, map_function_t func) {
 
-  std::cout << "Mapping and then extracting path from " << indexToString(start) << " to " << indexToString(end) << "\n";
+  std::cout << "Mapping and then extracting path from " << pather::indexToString(start) << " to " << pather::indexToString(end) << "\n";
   auto prevMap = func(grid, start);
 
   drawMap(*prevMap);
@@ -107,7 +98,7 @@ void testMappingFunction(const grid_t& grid, index_t start, index_t end, map_fun
   std::cout << "Path:\n";
   for (auto i = path->begin(); i != path->end(); ++i) {
 
-    std::cout << indexToString(*i) << " ";
+    std::cout << pather::indexToString(*i) << " ";
   }
   std::cout << "\n";
 }
@@ -117,7 +108,7 @@ void testNeighbors(const grid_t& grid, index_t index) {
   auto neighbors = pather::listNeighborsMoore(grid, index);
 
   for (auto& neighbor : *neighbors) {
-    std::cout << indexToString(neighbor) << " ";
+    std::cout << pather::indexToString(neighbor) << " ";
   }
 }
 

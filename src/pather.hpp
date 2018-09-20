@@ -4,6 +4,7 @@
 #include <iostream> // error checking
 #include <map>
 #include <memory>
+#include <string>
 #include <queue>
 #include <vector>
 
@@ -43,6 +44,8 @@ namespace pather {
   
   std::unique_ptr<map_t> breadthFirst(const grid_t& grid, index_t start);
   std::unique_ptr<map_t> dijkstra(const grid_t& grid, index_t start);
+
+  std::string indexToString(index_t& index);
 }
 
 #endif // PATHER_INCLUDE

@@ -19,10 +19,10 @@ void forVec2D(std::vector<std::vector<T>>& vec2D,
     for (auto iy = ix->begin(); iy != ix->end(); ++iy) {
 
       elementFunc(x, y, *iy);
-      y += 1;
+      ++y;
     }
 
-    x += 1;
+    ++x;
   }
 }
 

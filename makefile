@@ -4,6 +4,8 @@ DEVFLAGS = -ggdb -Wall -Wextra -Wpedantic -std=c++14
 
 FLAGS = -Wall -std=c++14
 
+SFML = -lsfml-graphics -lsfml-window -lsfml-system
+
 
 SOURCES = $(wildcard src/*.cpp)
 
@@ -16,7 +18,7 @@ all: $(OBJ)
 
 dev: $(OBJ)
 
-	$(CC) $(DEVFLAGS) -o tests.bin $^
+	$(CC) $(DEVFLAGS) -o tests.bin $^ $(SFML)
 
 pather: src/pather.cpp
 

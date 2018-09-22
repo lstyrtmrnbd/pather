@@ -2,6 +2,9 @@
 #include <functional>
 #include <memory>
 #include <string>
+
+#include <SFML/Graphics.hpp>
+
 #include "pather.hpp"
 
 // map realized as grid for drawing etc
@@ -9,6 +12,17 @@ using prev_grid_t = std::vector<std::vector<index_t>>;
 
 // function type of map generating path finding functions
 using map_function_t = std::function<std::unique_ptr<map_t>(const grid_t&, index_t)>;
+
+using shape_row_t = std::vector<std::unique_ptr<sf::Shape>>;
+using shapes_t = std::vector<std::unique_ptr<shape_row_t>>;
+
+const int winWidth = 800;
+const int winHeight = 600;
+
+std::unique_ptr<sf::RenderWindow> window;
+std::unique_ptr<shapes_t> shapes;
+
+sf::Color cellColor = sf::Color(0, 255, 0);
 
 std::unique_ptr<prev_grid_t> makePrevGrid(const map_t& map) {
 
@@ -67,6 +81,25 @@ void drawMap(const map_t& map) {
   auto prevGrid = makePrevGrid(map);
 
   drawPrevGrid(*prevGrid);
+}
+
+void fillCells(int w, int h) {
+
+  shapes = std::make_unique<shapes_t>(w, std::vector<std::unique_ptr<sf::Shape>>(h));
+  
+  float cellw = winWidth / (float)w;
+  float cellh = winHeight / (float)h;
+  
+  auto fill = [cellw, cellh](int x, int y, std::unique_ptr<sf::Shape>& shape) {
+
+    shape.reset(new sf::RectangleShape(sf::Vector2f(cellw, cellh)));
+
+    shape->setFillColor(cellColor);
+
+    shape->setPosition((float)x * cellw, (float)y * cellh);
+  };
+
+  forVec2D<std::unique_ptr<sf::Shape>>(*shapes, fill);
 }
 
 std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {
@@ -150,8 +183,35 @@ int main(int argc, char** argv) {
 
   auto grids = makeGrids();
   
-  testGrids(*grids);
+  //testGrids(*grids);
 
-  std::cout << "Tests complete\n";
+  //std::cout << "Tests complete\n";
+
+  window = std::make_unique<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), "testing pather");
+
+  fillCells(8,6);
+
+  auto drawShape = [](int x, int y, std::unique_ptr<sf::Shape>& shape){
+
+    window->draw(*shape);
+  };
+  
+  while (window->isOpen()) {
+
+    sf::Event event;
+
+    while (window->pollEvent(event)) {
+    
+      if (event.type == sf::Event::Closed)
+	window->close();
+    }
+    
+    window->clear(sf::Color::Black);
+    
+    forVec2D<std::unique_ptr<sf::Shape>>(*shapes, drawShape);
+    
+    window->display();
+  }
+  
   return 0;
 }

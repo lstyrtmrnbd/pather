@@ -94,11 +94,15 @@ void fillCells(int w, int h) {
   float cellw = winWidth / (float)w;
   float cellh = winHeight / (float)h;
   
-  auto fill = [cellw, cellh](int x, int y, std::unique_ptr<sf::Shape>& shape) {
+  auto fill = [cellw, cellh, h, w](int x, int y, std::unique_ptr<sf::Shape>& shape) {
 
     shape.reset(new sf::RectangleShape(sf::Vector2f(cellw, cellh)));
+
+    float xstep = (x / (float)w) * 255.0;
+    float ystep = (y / (float)h) * 255.0;
+    sf::Color stepcolor = sf::Color(0, (int)xstep, (int)ystep);
     
-    shape->setFillColor(cellColor);
+    shape->setFillColor(stepcolor);
 
     shape->setPosition((float)x * cellw, (float)y * cellh);
   };
@@ -193,7 +197,7 @@ int main(int argc, char** argv) {
 
   window = std::make_unique<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), "testing pather");
 
-  fillCells(8,6);
+  fillCells(32, 32);
 
   auto drawShape = [](int x, int y, std::unique_ptr<sf::Shape>& shape){
 

@@ -13,8 +13,7 @@ using prev_grid_t = std::vector<std::vector<index_t>>;
 // function type of map generating path finding functions
 using map_function_t = std::function<std::unique_ptr<map_t>(const grid_t&, index_t)>;
 
-using shape_row_t = std::vector<std::unique_ptr<sf::Shape>>;
-using shapes_t = std::vector<std::unique_ptr<shape_row_t>>;
+using shapes_t = std::vector<std::vector<std::unique_ptr<sf::Shape>>>;
 
 const int winWidth = 800;
 const int winHeight = 600;
@@ -85,7 +84,12 @@ void drawMap(const map_t& map) {
 
 void fillCells(int w, int h) {
 
-  shapes = std::make_unique<shapes_t>(w, std::vector<std::unique_ptr<sf::Shape>>(h));
+  shapes = std::make_unique<shapes_t>();
+  
+  for (int x = 0; x < w; ++x) {
+
+    shapes->push_back(std::vector<std::unique_ptr<sf::Shape>>(h));
+  }
   
   float cellw = winWidth / (float)w;
   float cellh = winHeight / (float)h;
@@ -93,7 +97,7 @@ void fillCells(int w, int h) {
   auto fill = [cellw, cellh](int x, int y, std::unique_ptr<sf::Shape>& shape) {
 
     shape.reset(new sf::RectangleShape(sf::Vector2f(cellw, cellh)));
-
+    
     shape->setFillColor(cellColor);
 
     shape->setPosition((float)x * cellw, (float)y * cellh);

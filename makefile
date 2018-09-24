@@ -14,7 +14,7 @@ OBJ = $(SOURCES:.cpp=.o)
 
 all: $(OBJ)
 
-	$(CC) $(FLAGS) -o tests.bin $^
+	$(CC) $(FLAGS) -o tests.bin $^ $(SFML)
 
 dev: $(OBJ)
 

@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "pather.hpp"
+#include "pathtester.hpp"
 
 // map realized as grid for drawing etc
 using prev_grid_t = std::vector<std::vector<index_t>>;

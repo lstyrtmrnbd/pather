@@ -2,6 +2,8 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <tuple>   //std::tie
+#include <utility> //std::pair
 
 #include <SFML/Graphics.hpp>
 
@@ -21,8 +23,6 @@ const int winHeight = 600;
 
 std::unique_ptr<sf::RenderWindow> window;
 std::unique_ptr<shapes_t> shapes;
-
-sf::Color cellColor = sf::Color(0, 255, 0);
 
 std::unique_ptr<prev_grid_t> makePrevGrid(const map_t& map) {
 
@@ -109,6 +109,41 @@ void fillCells(int w, int h) {
   };
 
   forVec2D<std::unique_ptr<sf::Shape>>(*shapes, fill);
+}
+
+void paintPathtester(Pathtester& pathtest) {
+
+  int w, h;
+  std::tie(w, h) = pathtest.getDimensions();
+
+  // auto [w, h] = pathtest.getDimensions(); // C++17 structured bindings
+
+  shapes = std::make_unique<shapes_t>();
+  
+  for (int x = 0; x < w; ++x) {
+
+    shapes->push_back(std::vector<std::unique_ptr<sf::Shape>>(h));
+  }
+
+  // C-style casts up in here
+  float cellw = winWidth / (float)w;
+  float cellh = winHeight / (float)h;
+
+  auto paint = [&pathtest, cellw, cellh, h, w](int x, int y, std::unique_ptr<sf::Shape>& shape) {
+
+    shape.reset(new sf::RectangleShape(sf::Vector2f(cellw, cellh)));
+
+    float xstep = (x / (float)w) * 255.0;
+    float ystep = (y / (float)h) * 255.0;
+    float rdiff = pathtest.getRelativeDifficulty(x, y) * 255.0;
+    sf::Color stepcolor = sf::Color((int)rdiff, (int)xstep, (int)ystep);
+    
+    shape->setFillColor(stepcolor);
+
+    shape->setPosition((float)x * cellw, (float)y * cellh);
+  };
+
+  forVec2D<std::unique_ptr<sf::Shape>>(*shapes, paint);
 }
 
 std::unique_ptr<std::vector<std::unique_ptr<grid_t>>> makeGrids() {
@@ -198,7 +233,10 @@ int main(int argc, char** argv) {
 
   window = std::make_unique<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), "testing pather");
 
-  fillCells(32, 32);
+  //fillCells(32, 32);
+
+  Pathtester pathtest = Pathtester::RandomPathtester(32, 32, 0, 64);
+  paintPathtester(pathtest);
 
   auto drawShape = [](int x, int y, std::unique_ptr<sf::Shape>& shape){
 

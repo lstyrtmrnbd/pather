@@ -1,10 +1,15 @@
 #ifndef PATHTESTER_INCLUDE
 #define PATHTESTER_INCLUDE
 
+// smart pointers
 #include <memory>
 
+// rand considered harmful ;-)
 #include <cstdlib>
 #include <ctime>
+
+// std::pair
+#include <utility>
 
 #include "pather.hpp"
 
@@ -23,6 +28,10 @@ public:
 
   static Pathtester FlatPathtester(int w, int h);
   static Pathtester RandomPathtester(int w, int h, int diffMin, int diffMax);
+
+  std::pair<int, int> getDimensions();
+  int getDifficulty(int x, int y);
+  double getRelativeDifficulty(int x, int y);
 
 };
 

@@ -28,3 +28,28 @@ Pathtester Pathtester::RandomPathtester(int w, int h, int diffMin, int diffMax) 
 
   return Pathtester(w, h, randDifficulty, diffMin, diffMax);
 }
+
+std::pair<int, int> Pathtester::getDimensions() {
+
+  return std::make_pair(this->width, this->height);
+}
+
+int Pathtester::getDifficulty(int x, int y) {
+
+  return this->diffGrid->at(x).at(y);
+}
+
+double Pathtester::getRelativeDifficulty(int x, int y) {
+
+  int diff = getDifficulty(x, y);
+  
+  if (diff < this->diffMin) {
+    return 0.0;
+
+  } else if (diff > this->diffMax) {
+    return 1.0;
+    
+  } else {
+    return  (double)(diff - this->diffMin) / (double)(this->diffMax - this->diffMin);
+  }
+}
